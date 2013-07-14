@@ -15,6 +15,8 @@ import org.kohsuke.stapler.QueryParameter;
 import javax.servlet.ServletException;
 import java.io.IOException;
 
+import hudson.model.Descriptor.FormException;
+
 /**
  * Sample {@link Builder}.
  *

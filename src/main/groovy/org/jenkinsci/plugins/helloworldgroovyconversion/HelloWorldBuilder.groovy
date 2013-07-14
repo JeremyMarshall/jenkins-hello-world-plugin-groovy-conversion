@@ -36,19 +36,12 @@ import hudson.model.Descriptor.FormException;
  */
 public class HelloWorldBuilder extends Builder {
 
-    private final String name;
+    def name
 
     // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
-    public HelloWorldBuilder(String name) {
-        this.name = name;
-    }
-
-    /**
-     * We'll use this from the <tt>config.jelly</tt>.
-     */
-    public String getName() {
-        return name;
+    HelloWorldBuilder(String name) {
+        this.name = name
     }
 
     @Override
@@ -58,18 +51,18 @@ public class HelloWorldBuilder extends Builder {
 
         // This also shows how you can consult the global configuration of the builder
         if (getDescriptor().getUseFrench())
-            listener.getLogger().println("Bonjour, "+name+"!");
+            listener.getLogger().println "Bonjour, ${name}!"
         else
-            listener.getLogger().println("Hello, "+name+"!");
-        return true;
+            listener.getLogger().println "Hello, ${name}!"
+        true
     }
 
     // Overridden for better type safety.
     // If your plugin doesn't really define any property on Descriptor,
     // you don't have to do this.
     @Override
-    public DescriptorImpl getDescriptor() {
-        return (DescriptorImpl)super.getDescriptor();
+    DescriptorImpl getDescriptor() {
+        super.descriptor as DescriptorImpl
     }
 
     /**
@@ -81,7 +74,7 @@ public class HelloWorldBuilder extends Builder {
      * for the actual HTML fragment for the configuration screen.
      */
     @Extension // This indicates to Jenkins that this is an implementation of an extension point.
-    public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
+    static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
         /**
          * To persist global configuration information,
          * simply store it in a field and call save().
@@ -89,7 +82,7 @@ public class HelloWorldBuilder extends Builder {
          * <p>
          * If you don't want fields to be persisted, use <tt>transient</tt>.
          */
-        private boolean useFrench;
+        def useFrench
 
         /**
          * Performs on-the-fly validation of the form field 'name'.
@@ -102,44 +95,33 @@ public class HelloWorldBuilder extends Builder {
         public FormValidation doCheckName(@QueryParameter String value)
                 throws IOException, ServletException {
             if (value.length() == 0)
-                return FormValidation.error("Please set a name");
+                return FormValidation.error("Please set a name")
             if (value.length() < 4)
-                return FormValidation.warning("Isn't the name too short?");
-            return FormValidation.ok();
+                return FormValidation.warning("Isn't the name too short?")
+            return FormValidation.ok()
         }
 
         public boolean isApplicable(Class<? extends AbstractProject> aClass) {
             // Indicates that this builder can be used with all kinds of project types 
-            return true;
+            true
         }
 
         /**
          * This human readable name is used in the configuration screen.
          */
-        public String getDisplayName() {
-            return "Say hello world";
-        }
+        String getDisplayName() {"Say hello world"}
 
         @Override
         public boolean configure(StaplerRequest req, JSONObject formData) throws FormException {
             // To persist global configuration information,
             // set that to properties and call save().
-            useFrench = formData.getBoolean("useFrench");
+            useFrench = formData.getBoolean "useFrench"
             // ^Can also use req.bindJSON(this, formData);
             //  (easier when there are many fields; need set* methods for this, like setUseFrench)
-            save();
-            return super.configure(req,formData);
+            save()
+            super.configure(req,formData)
         }
 
-        /**
-         * This method returns true if the global configuration says we should speak French.
-         *
-         * The method name is bit awkward because global.jelly calls this method to determine
-         * the initial state of the checkbox by the naming convention.
-         */
-        public boolean getUseFrench() {
-            return useFrench;
-        }
     }
 }
 

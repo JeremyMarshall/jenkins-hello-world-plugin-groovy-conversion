@@ -1,0 +1,47 @@
+buildscript {
+    repositories {
+        maven {
+            name 'jenkins'
+            delegate.url('http://maven.jenkins-ci.org/content/repositories/releases/')
+        }
+        mavenCentral()
+    }
+    dependencies {
+        classpath 'org.jenkins-ci.tools:gradle-jpi-plugin:0.4.0'
+    }
+}
+
+apply plugin: 'jpi'
+apply plugin: 'idea'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    groovy 'org.codehaus.groovy:groovy-all:1.8.6'
+    testCompile 'org.spockframework:spock-core:0.6-groovy-1.8'
+    jenkinsTest 'org.jenkins-ci.plugins:ant:1.1@jar',
+                'org.jenkins-ci.plugins:javadoc:1.0@jar'
+}
+
+
+description = "Groovy/Gradle Jenkins Hello World Plugin"
+
+jenkinsPlugin {
+    coreVersion = '1.475'
+    displayName = 'Groovy Hello World'
+    url = 'https://wiki.jenkins-ci.org/display/JENKINS/Groovy+Hello+World+Plugin'
+    gitHubUrl = 'https://github.com/jenkinsci/groovy-hello-world-plugin'
+    //maskClasses = 'groovy.grape'
+    developers {
+        developer {
+            id 'jeremym'
+            name 'Jeremy Marshall'
+            email 'jeremym@gmailx.com'
+        }
+    }
+}
+
+//tasks.jpi.manifest.attributes(["PluginFirstClassLoader": "true" ])
+
